@@ -30,7 +30,31 @@ namespace MovieSearchProject
             // Skapa ett objekt utifrån jsondatan 
             MovieInfo movie = JsonConvert.DeserializeObject<MovieInfo>(responseContent);
 
-            Console.WriteLine(movie.Title);
+            ShowMovieInfo(movie); 
+
+            // Metod som visar all info om movies
+            void ShowMovieInfo(MovieInfo movie)
+            {
+                // Hämtar värdet genom fieldsen i MovieInfo klassen
+                Console.WriteLine("\nID: ");
+                Console.WriteLine($"{movie.Id}");
+                Console.WriteLine("\nTitle: ");
+                Console.WriteLine($"{movie.Title}");
+                Console.WriteLine("\nAbout:");
+                Console.WriteLine($"{movie.Overview}");
+                Console.WriteLine("\nLanguage:");
+                Console.WriteLine($"{movie.Original_language}");
+                Console.WriteLine("\nRelease date:");
+                Console.WriteLine($"{movie.Release_date}");
+                Console.WriteLine("\nRating: ");
+                Console.WriteLine($"{movie.Vote_average}");
+                Console.WriteLine("\nRuntime:");
+                Console.WriteLine($"{movie.Runtime} min");
+                Console.WriteLine("\nHomepage:");
+                Console.WriteLine($"{movie.Homepage}");
+                Console.WriteLine("\nPoster path:");
+                Console.WriteLine($"https://image.tmdb.org/t/p/w500{movie.Poster_path}"); // Hårdkodat värde på den tidigare delen av strängen, resterande hämtas i Poster_path
+            }
 
         }
     }
