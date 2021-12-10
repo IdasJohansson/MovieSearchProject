@@ -17,6 +17,7 @@ namespace MovieSearchProject
 
             void Menu()
             {
+                Console.Clear(); 
                 Console.WriteLine("Welcome to MovieSearch!");
                 Console.WriteLine("What would you like to do?");
                 Console.WriteLine("\nA. Search for movies by ID");
@@ -82,7 +83,7 @@ namespace MovieSearchProject
 
                 // Skapa ett objekt utifrån jsondatan 
                 MovieInfo movie = JsonConvert.DeserializeObject<MovieInfo>(responseContent);
-
+                
                 ShowMovieInfo(movie);
 
                 Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -124,6 +125,12 @@ namespace MovieSearchProject
                         // Skriver ut en lista med alla titlar som inkluderar det man söker på
                         Console.WriteLine($"{item.Title}");
                     }
+                    /*
+                     obs funkar ej
+                    Console.WriteLine("\nEnter a number to see some more info about the movie:  (list starts with index 0)");
+                    int userInput = Convert.ToInt32(Console.ReadLine());
+                    ShowMovieInfo(search.Results[userInput]);
+                    */
                 }
                 else
                 {
