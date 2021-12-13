@@ -120,17 +120,19 @@ namespace MovieSearchProject
                 if (search.Results.Count > 0)
                 {
                     Console.WriteLine("\nMovies found: ");
+                    int nr = -1;
                     foreach (var item in search.Results)
                     {
                         // Skriver ut en lista med alla titlar som inkluderar det man söker på
-                        Console.WriteLine($"{item.Title}");
+                        nr += 1; 
+                        Console.WriteLine($"{nr}. {item.Title}");
                     }
-                    /*
-                     obs funkar ej
-                    Console.WriteLine("\nEnter a number to see some more info about the movie:  (list starts with index 0)");
+
+                    Console.WriteLine("\nEnter a number to see some more info about the movie: ");
                     int userInput = Convert.ToInt32(Console.ReadLine());
-                    ShowMovieInfo(search.Results[userInput]);
-                    */
+                    //ShowMovieInfo(search.Results[userInput]);
+                    ShowMovieInfoFromTitle(search.Results[userInput]); 
+                    
                 }
                 else
                 {
@@ -164,6 +166,23 @@ namespace MovieSearchProject
                 Console.WriteLine($"{movie.Runtime} min");
                 Console.WriteLine("\nHomepage:");
                 Console.WriteLine($"{movie.Homepage}");
+                Console.WriteLine("\nPoster path:");
+                Console.WriteLine($"https://image.tmdb.org/t/p/w500{movie.Poster_path}"); // Hårdkodat värde på den tidigare delen av strängen, resterande hämtas i Poster_path
+            }
+
+            // Metod som visar info om movies om man söker på title
+            void ShowMovieInfoFromTitle(MovieInfo movie)
+            {
+                Console.WriteLine("\nTitle: ");
+                Console.WriteLine($"{movie.Title}");
+                Console.WriteLine("\nAbout:");
+                Console.WriteLine($"{movie.Overview}");
+                Console.WriteLine("\nLanguage:");
+                Console.WriteLine($"{movie.Original_language}");
+                Console.WriteLine("\nRelease date:");
+                Console.WriteLine($"{movie.Release_date}");
+                Console.WriteLine("\nRating: ");
+                Console.WriteLine($"{movie.Vote_average}");
                 Console.WriteLine("\nPoster path:");
                 Console.WriteLine($"https://image.tmdb.org/t/p/w500{movie.Poster_path}"); // Hårdkodat värde på den tidigare delen av strängen, resterande hämtas i Poster_path
             }
