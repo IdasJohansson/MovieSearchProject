@@ -81,7 +81,7 @@ namespace MovieSearchProject
                 // Response - går in i Content och hämtar det som står där. 
                 string responseContent = await response.Content.ReadAsStringAsync();
 
-                // Skapa ett objekt utifrån jsondatan 
+                // Skapar ett objekt utifrån jsondatan, mappar om json-strängen till .Net objekt. 
                 MovieInfo movie = JsonConvert.DeserializeObject<MovieInfo>(responseContent);
                 
                 ShowMovieInfo(movie);
@@ -120,17 +120,14 @@ namespace MovieSearchProject
                 if (search.Results.Count > 0)
                 {
                     Console.WriteLine("\nMovies found: ");
-                    int nr = -1;
                     foreach (var item in search.Results)
                     {
                         // Skriver ut en lista med alla titlar som inkluderar det man söker på
-                        nr += 1; 
-                        Console.WriteLine($"{nr}. {item.Title}");
+                        Console.WriteLine($"{search.Results.IndexOf(item)}. {item.Title}");
                     }
-
+                    // För att visa mer information om någon film i listan
                     Console.WriteLine("\nEnter a number to see some more info about the movie: ");
                     int userInput = Convert.ToInt32(Console.ReadLine());
-                    //ShowMovieInfo(search.Results[userInput]);
                     ShowMovieInfoFromTitle(search.Results[userInput]); 
                     
                 }

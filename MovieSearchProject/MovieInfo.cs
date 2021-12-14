@@ -12,7 +12,7 @@ namespace MovieSearchProject
         public double Vote_average { get; set; }
         public int Runtime { get; set; }
         public string Homepage { get; set; }
-        public string Poster_path { get; set; } // Endast halva strängen kommer med skickar med hårdkodat för första delen i program 
+        public string Poster_path { get; set; } // Endast halva strängen kommer med skickar med hårdkodat värde för första delen i metoden 
 
 
         public MovieInfo(int id, string title, string overview, string original_language, string release_date, double vote_average, int runtime, string homepage, string poster_path)
