@@ -66,81 +66,109 @@ namespace MovieSearchProject
 
             async Task SearchMovieByIdAsync()
             {
-                // Här sparar vi api key i variablen key. 
-                DotNetEnv.Env.TraversePath().Load();
-                string key = Environment.GetEnvironmentVariable("API_KEY");
+                try
+                {
+                    // Här sparar vi api key i variablen key. 
+                    DotNetEnv.Env.TraversePath().Load();
+                    string key = Environment.GetEnvironmentVariable("API_KEY");
 
-                Console.WriteLine("Enter numeric ID to search for movie: ");
-                int searchId = Convert.ToInt32(Console.ReadLine());
-                string uri = $@"https://api.themoviedb.org/3/movie/{searchId}?api_key={key}";
+                    Console.WriteLine("Enter numeric ID to search for movie: ");
+                    int searchId = Convert.ToInt32(Console.ReadLine());
+                    string uri = $@"https://api.themoviedb.org/3/movie/{searchId}?api_key={key}";
 
-                // Hämtar datan
-                var response = await client.GetAsync(uri);
-                response.EnsureSuccessStatusCode(); // Metod som kollar om vi har statuskod 200 om vi har kontakt med api. Vilket behövs. 
+                    // Hämtar datan
+                    var response = await client.GetAsync(uri);
+                    response.EnsureSuccessStatusCode(); // Metod som kollar om vi har statuskod 200 om vi har kontakt med api. Vilket behövs. 
 
-                // Response - går in i Content och hämtar det som står där. 
-                string responseContent = await response.Content.ReadAsStringAsync();
+                    // Response - går in i Content och hämtar det som står där. 
+                    string responseContent = await response.Content.ReadAsStringAsync();
 
-                // Skapar ett objekt utifrån jsondatan, mappar om json-strängen till .Net objekt. 
-                MovieInfo movie = JsonConvert.DeserializeObject<MovieInfo>(responseContent);
-                
-                ShowMovieInfo(movie);
+                    // Skapar ett objekt utifrån jsondatan, mappar om json-strängen till .Net objekt. 
+                    MovieInfo movie = JsonConvert.DeserializeObject<MovieInfo>(responseContent);
 
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.WriteLine("Press a key to return to Menu...");
-                Console.ResetColor();
-                Console.ReadKey();
-                Console.Clear();
-                Menu();
+                    ShowMovieInfo(movie);
+
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.WriteLine("Press a key to return to Menu...");
+                    Console.ResetColor();
+                    Console.ReadKey();
+                    Console.Clear();
+                    Menu();
+                }
+                catch (Exception e)
+                {
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine("Press a key and try again.");
+                    Console.ResetColor();
+                    Console.ReadKey();
+                    Console.Clear();
+                    Menu();
+                }
             }
 
             async Task SearchMovieByTitleAsync()
             {
-                DotNetEnv.Env.TraversePath().Load();
-                string key = Environment.GetEnvironmentVariable("API_KEY");
-
-                Console.WriteLine("Enter a title to search for movie: ");
-                string searchForTitle = Console.ReadLine();
-
-                // Länk till api för att kunna söka via titel. Api key är lagrat i {key}, userinput i {searchForTitle}
-                string titlesearch = $@"https://api.themoviedb.org/3/search/movie?api_key={key}&query={searchForTitle}";
-
-                // Hämtar datan
-                var resp = await client.GetAsync(titlesearch);
-                resp.EnsureSuccessStatusCode(); // Metod som kollar om vi har statuskod 200 om vi har kontakt med api. Vilket behövs. 
-
-                // Resp - går in i Content och hämtar det som står där. 
-                string respContent = await resp.Content.ReadAsStringAsync();
-
-                // Skapa ett objekt utifrån jsondatan 
-                SearchTitle search = JsonConvert.DeserializeObject<SearchTitle>(respContent);
-
-                // Om listan Results med objekt är större än 0 skrivs resultaten ut annars körs villkoret i else-satsen. 
-                //search.Results listan med alla filmobjekt i
-                if (search.Results.Count > 0)
+                try
                 {
-                    Console.WriteLine("\nMovies found: ");
-                    foreach (var item in search.Results)
+                    DotNetEnv.Env.TraversePath().Load();
+                    string key = Environment.GetEnvironmentVariable("API_KEY");
+
+                    Console.WriteLine("Enter a title to search for movie: ");
+                    string searchForTitle = Console.ReadLine();
+
+                    // Länk till api för att kunna söka via titel. Api key är lagrat i {key}, userinput i {searchForTitle}
+                    string titlesearch = $@"https://api.themoviedb.org/3/search/movie?api_key={key}&query={searchForTitle}";
+
+                    // Hämtar datan
+                    var resp = await client.GetAsync(titlesearch);
+                    resp.EnsureSuccessStatusCode(); // Metod som kollar om vi har statuskod 200 om vi har kontakt med api. Vilket behövs. 
+
+                    // Resp - går in i Content och hämtar det som står där. 
+                    string respContent = await resp.Content.ReadAsStringAsync();
+
+                    // Skapa ett objekt utifrån jsondatan 
+                    SearchTitle search = JsonConvert.DeserializeObject<SearchTitle>(respContent);
+
+                    // Om listan Results med objekt är större än 0 skrivs resultaten ut annars körs villkoret i else-satsen. 
+                    //search.Results listan med alla filmobjekt i
+                    if (search.Results.Count > 0)
                     {
-                        // Skriver ut en lista med alla titlar som inkluderar det man söker på
-                        Console.WriteLine($"{search.Results.IndexOf(item)}. {item.Title}");
+                        Console.WriteLine("\nMovies found: ");
+                        foreach (var item in search.Results)
+                        {
+                            // Skriver ut en lista med alla titlar som inkluderar det man söker på
+                            Console.WriteLine($"{search.Results.IndexOf(item)}. {item.Title}");
+                        }
+                        // För att visa mer information om någon film i listan
+                        Console.WriteLine("\nEnter a number to see some more info about the movie: ");
+                        int userInput = Convert.ToInt32(Console.ReadLine());
+                        ShowMovieInfoFromTitle(search.Results[userInput]);
+
                     }
-                    // För att visa mer information om någon film i listan
-                    Console.WriteLine("\nEnter a number to see some more info about the movie: ");
-                    int userInput = Convert.ToInt32(Console.ReadLine());
-                    ShowMovieInfoFromTitle(search.Results[userInput]); 
-                    
+                    else
+                    {
+                        Console.WriteLine($"{searchForTitle}, is not found.");
+                    }
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.WriteLine("Press a key to return to menu...");
+                    Console.ResetColor();
+                    Console.ReadKey();
+                    Console.Clear();
+                    Menu();
                 }
-                else
+                catch (Exception e)
                 {
-                    Console.WriteLine($"{searchForTitle}, is not found.");
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine("Press a key and try again.");
+                    Console.ResetColor();
+                    Console.ReadKey();
+                    Console.Clear();
+                    Menu();
                 }
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.WriteLine("Press a key to return to menu...");
-                Console.ResetColor();
-                Console.ReadKey();
-                Console.Clear();
-                Menu();
             }
 
             // Metod som visar all info om movies
